@@ -1,21 +1,3 @@
-# tree = {
-#     "A": ["B","C"],
-#     "B": ["D","E"],
-#     "C": ["I","J"],
-#     'D': ['F'],
-#     'E' : ['G','H'],
-#     'I' : [],
-#     'J' : ['K','L'],
-#     'F' : [],
-#     'G' : [],
-#     'H' : ['M'],
-#     'L' : [],
-#     'K' : []
-# }
-
-
-# print(tree)
-
 class Node:
     def __init__(self,val):
         self.left = None
