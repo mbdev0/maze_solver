@@ -13,10 +13,14 @@ class Cell:
         x_coord = self.x*self.w
         y_coord = self.y*self.w
         
-        pygame.draw.line(display, (255,255,255), (x_coord,y_coord), (x_coord + self.w, y_coord), 1)
-        pygame.draw.line(display, (255,255,255), (x_coord,y_coord + self.w),(x_coord + self.w, y_coord + self.w), 1)
-        pygame.draw.line(display, (255,255,255), (x_coord,y_coord),(x_coord, y_coord+ self.w) , 1)
-        pygame.draw.line(display, (255,255,255), (x_coord + self.w, y_coord),(x_coord+self.w, y_coord+self.w) , 1)
+        if self.walls[0]:
+            pygame.draw.line(display, (255,255,255), (x_coord,y_coord), (x_coord + self.w, y_coord), 1)
+        if self.walls[1]:
+            pygame.draw.line(display, (255,255,255), (x_coord,y_coord + self.w),(x_coord + self.w, y_coord + self.w), 1)
+        if self.walls[2]:
+            pygame.draw.line(display, (255,255,255), (x_coord,y_coord),(x_coord, y_coord+ self.w) , 1)
+        if self.walls[3]:
+            pygame.draw.line(display, (255,255,255), (x_coord + self.w, y_coord),(x_coord+self.w, y_coord+self.w) , 1)
 
 
 if __name__ == '__main__':
@@ -40,6 +44,11 @@ if __name__ == '__main__':
     while not finished:
         for i in range(len(grid)):
             grid[i].displayCell()
+
+        """
+        DFS will go here
+        """
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
