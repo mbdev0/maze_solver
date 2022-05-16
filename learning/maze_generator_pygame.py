@@ -6,7 +6,7 @@ class Cell:
         self.y = y
         self.w = w
         self.display = display
-        self.walls = [True,True,True,True] #Left Right Up Down
+        self.walls = [True,True,True,True] #Top Right Left Down
 
     def displayCell(self):
         x_coord = self.x*self.w
