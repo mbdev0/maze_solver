@@ -2,22 +2,6 @@ import pygame
 import time
 import random
 
-def breakWalls(curr,next):
-    diff_x = curr.x - next.x
-    if diff_x == -1:
-        curr.walls[3] = False
-        next.walls[2] = False
-    elif diff_x == 1:
-        curr.walls[2] = False
-        next.walls[3] = False
-
-    diff_y = curr.y - next.y
-    if diff_y == -1:
-        curr.walls[1] = False
-        next.walls[0] = False
-    elif diff_y == 1:
-        curr.walls[0] = False
-        next.walls[1] = False
 
 class Cell:
 
@@ -111,8 +95,25 @@ class Maze:
         for i in grid:
             i.displayCell()
     
-    def DFS(self):
+    def breakWalls(self, curr, next):
+        diff_x = curr.x - next.x
+        if diff_x == -1:
+            curr.walls[3] = False
+            next.walls[2] = False
+        elif diff_x == 1:
+            curr.walls[2] = False
+            next.walls[3] = False
 
+        diff_y = curr.y - next.y
+        if diff_y == -1:
+            curr.walls[1] = False
+            next.walls[0] = False
+        elif diff_y == 1:
+            curr.walls[0] = False
+            next.walls[1] = False
+
+
+    def DFS(self):
         self.curr.visited = True
         self.curr.showCurrent()
         next_n = self.curr.findNeighbours()
@@ -120,7 +121,7 @@ class Maze:
         if next_n:
             next_n.visited = True
             self.dfs_stack.append(self.curr)
-            breakWalls(self.curr, next_n)
+            self.breakWalls(self.curr, next_n)
             self.curr = next_n
         elif self.dfs_stack:
             self.curr = self.dfs_stack.pop()
