@@ -86,42 +86,62 @@ class Cell:
 
         pygame.draw.rect(self.display, (255,0,0), (x_coord,y_coord, self.w, self.w))
 
+class Maze:
+    def __init__(self,height,width,w) -> None:
+        self.height = height
+        self.width = width
+        self.w = w 
+        self.dfs_stack = []
+        self.grid = []
+        self.curr = None
+    
+    def maze_generation(self,display):
+        cols = int(self.width/self.w)
+        rows = int(self.height/self.w)
+        grid = []
+
+        for y in range(rows):
+            for x in range(cols):
+                grid.append(Cell(x,y,self.w,display, cols, rows, grid))
+
+        self.curr = grid[0]
+        return grid
+
+    def display_grid(self):
+        for i in grid:
+            i.displayCell()
+    
+    def DFS(self):
+
+        self.curr.visited = True
+        self.curr.showCurrent()
+        next_n = self.curr.findNeighbours()
+
+        if next_n:
+            next_n.visited = True
+            self.dfs_stack.append(self.curr)
+            breakWalls(self.curr, next_n)
+            self.curr = next_n
+        elif self.dfs_stack:
+            self.curr = self.dfs_stack.pop()
+
 if __name__ == '__main__':
     pygame.init()
     width = 300
     height = 300
     wOfCell = 30
 
-    cols = int(width/wOfCell)
-    rows = int(height/wOfCell)
-    grid = []
-
     display = pygame.display.set_mode((width,height))
 
-    for y in range(rows):
-        for x in range(cols):
-            grid.append(Cell(x,y,wOfCell,display, cols, rows,grid))
+    maze = Maze(height,width,wOfCell)
+    grid = maze.maze_generation(display)
 
-    curr = grid[0]
-    stack = []
     finished = False
     clock = pygame.time.Clock()
 
     while not finished:
-        for i in grid:
-            i.displayCell()
-
-        curr.visited = True
-        curr.showCurrent()
-        next_n = curr.findNeighbours()
-
-        if next_n:
-            next_n.visited = True
-            stack.append(curr)
-            breakWalls(curr, next_n)
-            curr = next_n
-        elif stack:
-            curr = stack.pop()
+        maze.display_grid()
+        maze.DFS()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
