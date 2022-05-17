@@ -10,7 +10,8 @@ class Cell:
         self.y = y
         self.w = w
         self.display = display
-        self.walls = [True,True,True,True] #Top Bottom Left Right
+        self.walls = {"N":True, "S":True, "W": True, "E":True}
+        #self.walls = [True,True,True,True] #Top Bottom Left Right
         self.visited = False
         self.cols = cols
         self.rows = rows
@@ -21,16 +22,16 @@ class Cell:
         y_coord = self.y*self.w
         
         if self.visited:
-            pygame.draw.rect(self.display, (0, 0, 255), (x_coord, y_coord,self.w,self.w))
+            pygame.draw.rect(self.display, (255, 255, 255), (x_coord, y_coord,self.w,self.w))
 
-        if self.walls[0]:
-            pygame.draw.line(self.display, (255,255,255), (x_coord,y_coord), (x_coord + self.w, y_coord), 1)
-        if self.walls[1]:
-            pygame.draw.line(self.display, (255,255,255), (x_coord,y_coord + self.w),(x_coord + self.w, y_coord + self.w), 1)
-        if self.walls[2]:
-            pygame.draw.line(self.display, (255,255,255), (x_coord,y_coord),(x_coord, y_coord+ self.w) , 1)
-        if self.walls[3]:
-            pygame.draw.line(self.display, (255,255,255), (x_coord + self.w, y_coord),(x_coord+self.w, y_coord+self.w) , 1)
+        if self.walls["N"]:
+            pygame.draw.line(self.display, (0,0,0), (x_coord,y_coord), (x_coord + self.w, y_coord), 1)
+        if self.walls["S"]:
+            pygame.draw.line(self.display, (0,0,0), (x_coord,y_coord + self.w),(x_coord + self.w, y_coord + self.w), 1)
+        if self.walls["W"]:
+            pygame.draw.line(self.display, (0,0,0), (x_coord,y_coord),(x_coord, y_coord+ self.w) , 1)
+        if self.walls["E"]:
+            pygame.draw.line(self.display, (0,0,0), (x_coord + self.w, y_coord),(x_coord+self.w, y_coord+self.w) , 1)
 
     def index(self,x ,y):
         if x < 0 or y < 0 or x>self.cols-1 or y>self.rows-1:
@@ -94,19 +95,19 @@ class Maze:
     def breakWalls(self, curr, next):
         diff_x = curr.x - next.x
         if diff_x == -1:
-            curr.walls[3] = False
-            next.walls[2] = False
+            curr.walls["E"] = False
+            next.walls["W"] = False
         elif diff_x == 1:
-            curr.walls[2] = False
-            next.walls[3] = False
+            curr.walls["W"] = False
+            next.walls["E"] = False
 
         diff_y = curr.y - next.y
         if diff_y == -1:
-            curr.walls[1] = False
-            next.walls[0] = False
+            curr.walls["S"] = False
+            next.walls["N"] = False
         elif diff_y == 1:
-            curr.walls[0] = False
-            next.walls[1] = False
+            curr.walls["N"] = False
+            next.walls["S"] = False
 
     def DFS(self):
         self.curr.visited = True
@@ -123,8 +124,8 @@ class Maze:
 
 if __name__ == '__main__':
     pygame.init()
-    width = 300
-    height = 300
+    width = 90
+    height = 90
     wOfCell = 30
 
     display = pygame.display.set_mode((width,height))
@@ -145,6 +146,10 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 finished = True
         
-        clock.tick(80)
+
         pygame.display.update()
+    
+    for i in grid:
+        print (i.walls)
+
 
