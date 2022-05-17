@@ -91,10 +91,6 @@ class Maze:
         self.curr = grid[0]
         return grid
 
-    def display_grid(self):
-        for i in grid:
-            i.displayCell()
-    
     def breakWalls(self, curr, next):
         diff_x = curr.x - next.x
         if diff_x == -1:
@@ -111,7 +107,6 @@ class Maze:
         elif diff_y == 1:
             curr.walls[0] = False
             next.walls[1] = False
-
 
     def DFS(self):
         self.curr.visited = True
@@ -141,7 +136,9 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
 
     while not finished:
-        maze.display_grid()
+        for cell in grid:
+            cell.displayCell()
+
         maze.DFS()
 
         for event in pygame.event.get():
