@@ -89,8 +89,7 @@ class Cell:
         pygame.draw.rect(self.display, (168, 50, 50), end)
         
         pygame.draw.rect(self.display, (27, 94, 227), (x_coord+10,y_coord+10, self.w-20, self.w-20))
-        time.sleep(0.2)
-        pygame.display.flip()
+        
         
     def showFinalPath(self):
         x_coord = self.x*self.w
@@ -103,8 +102,7 @@ class Cell:
         pygame.draw.rect(self.display, (168, 50, 50), end)
 
         pygame.draw.rect(self.display, (27, 140, 46), (x_coord+10,y_coord+10, self.w-20, self.w-20))
-        time.sleep(0.05)
-        pygame.display.flip()
+        
 
 
 class Maze:
@@ -126,6 +124,7 @@ class Maze:
                 grid.append(Cell(x,y,self.w,display, cols, rows, grid))
 
         self.curr = grid[0]
+        self.dfs_stack.append(self.curr)
         return grid
 
     def breakWalls(self, curr, next):
@@ -147,23 +146,23 @@ class Maze:
 
     def refreshScreen(self,grid):
         for cell in grid:
-                cell.displayCell()
+            cell.displayCell()
 
     def DFS(self):
-        self.curr.visited = True
-        self.curr.showCurrent()
-        next_n = self.curr.findNeighbours()
-
-        if next_n:
-            next_n.visited = True
-            self.dfs_stack.append(self.curr)
-            self.breakWalls(self.curr, next_n)
-            self.curr = next_n
-        elif self.dfs_stack:
-            self.curr = self.dfs_stack.pop()
-
-        return self.curr
-
+        while self.dfs_stack:
+            self.curr.visited = True
+            self.curr.showCurrent()
+            next_n = self.curr.findNeighbours()
+            if next_n:
+                next_n.visited = True
+                self.dfs_stack.append(self.curr)
+                self.breakWalls(self.curr, next_n)
+                self.curr = next_n
+            elif self.dfs_stack:
+                self.curr = self.dfs_stack.pop()
+        pygame.display.flip()
+        time.sleep(0.1)
+        pygame.display.update()
     def BFS(self,grid):
         START = grid[0]
         frontier = [START]
@@ -197,7 +196,7 @@ class Maze:
                     explored.append(childCell)
                     bfs_path[childCell] = currCell
 
-
+        pygame.display.flip()
         finalPath={}
         while START!=finalCell: 
             finalPath[bfs_path[finalCell]]=finalCell
@@ -207,37 +206,35 @@ class Maze:
         startToEnd= dict(reversed(list(finalPath.items())))
         for cell in startToEnd.values():
             cell.showFinalPath()
-
+            pygame.display.flip()
+        pygame.display.update()
         return finalPath
 
 if __name__ == '__main__':
     pygame.init()
-    width = 900
-    height = 900
-    wOfCell = 100
+    width = 500
+    height = 500
+    wOfCell = 22
 
     display = pygame.display.set_mode((width,height))
-    path = None
+    # path = None
     maze = Maze(height,width,wOfCell)
+    """Doesnt display the grid anymore"""
     grid = maze.maze_generation(display)
+    """This only displays a red square"""
+    maze.DFS()
 
+    """This displays the grid?"""
+    x = maze.BFS(grid)
+    # print(x)
+    # for i in x:
+    #     i.showFinalPath
     finished = False
     clock = pygame.time.Clock()
 
-    while True:
+    while not finished:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                finished = True
                 pygame.quit()
-        
-        if not finished:
-            maze.refreshScreen(grid)
-            
-            current = maze.DFS()
-            if current == grid[0]:
-                maze.refreshScreen(grid)
-
-                maze.BFS(grid)
-
-                finished=True
-            
-            pygame.display.update()
+                    
