@@ -68,13 +68,13 @@ class Cell:
         x_coord = self.x*self.w
         y_coord = self.y*self.w
 
-        pygame.draw.rect(self.display, (255,255,255), (x_coord,y_coord, self.w, self.w))
-    
+        pygame.draw.rect(self.display, (255,0,0), (x_coord,y_coord, self.w, self.w))
+        
     def showStartorEnd(self, index):
-            cell = grid[index]
-            cell_x = cell.x*self.w
-            cell_y = cell.y*self.w
-            return (cell_x, cell_y,self.w,self.w)
+        cell = grid[index]
+        cell_x = cell.x*self.w
+        cell_y = cell.y*self.w
+        return (cell_x, cell_y,self.w,self.w)
 
     def showPath(self):
         x_coord = self.x*self.w
@@ -87,10 +87,10 @@ class Cell:
         pygame.draw.rect(self.display, (50, 168, 92), start)
         pygame.draw.rect(self.display, (168, 50, 50), end)
         
-        pygame.draw.rect(self.display, (27, 94, 227), (x_coord+10,y_coord+10, self.w-20, self.w-20))
+        pygame.draw.rect(self.display, (27, 94, 227), (x_coord,y_coord, self.w, self.w))
+        pygame.display.flip()
         
-        
-    def showFinalPath(self):
+    def showFinalPathHelper(self):
         x_coord = self.x*self.w
         y_coord = self.y*self.w
         
@@ -100,17 +100,16 @@ class Cell:
         pygame.draw.rect(self.display, (50, 168, 92), start)
         pygame.draw.rect(self.display, (168, 50, 50), end)
 
-        pygame.draw.rect(self.display, (27, 140, 46), (x_coord+10,y_coord+10, self.w-20, self.w-20))
+        pygame.draw.rect(self.display, (27, 140, 46), (x_coord+5,y_coord+5, self.w-5, self.w-5))
         
 
-
 class Maze:
-    def __init__(self,height,width,w) -> None:
+    def __init__(self,height,width,w,grid=[]) -> None:
         self.height = height
         self.width = width
         self.w = w 
         self.dfs_stack = []
-        self.grid = []
+        self.grid = grid
         self.curr = None
     
     def maze_generation(self,display):
@@ -124,6 +123,7 @@ class Maze:
 
         self.curr = grid[0]
         self.dfs_stack.append(self.curr)
+        self.grid = grid
         return grid
 
     def breakWalls(self, curr, next):
@@ -147,10 +147,14 @@ class Maze:
         for cell in grid:
             cell.displayCell()
 
-    def DFS(self):
+    def DFS(self,clock,showBuilding=True,):
+        display.fill((0,0,0))
         while self.dfs_stack:
+            if showBuilding:
+                self.refreshScreen(self.grid)
+                self.curr.showCurrent()
+                clock.tick(60)
             self.curr.visited = True
-            self.curr.showCurrent()
             next_n = self.curr.findNeighbours()
             if next_n:
                 next_n.visited = True
@@ -161,8 +165,7 @@ class Maze:
                 self.curr = self.dfs_stack.pop()
             pygame.display.flip()
 
-        pygame.display.update()
-    def BFS(self,grid):
+    def BFS(self,grid,clock):
         START = grid[0]
         frontier = [START]
         explored = [START]
@@ -173,8 +176,8 @@ class Maze:
         while frontier:
             currCell = frontier.pop(0)
             currCell.showPath()
-            time.sleep(0.1)
             pygame.display.flip()
+            clock.tick(60)
             if currCell == finalCell:
                 self.refreshScreen(grid)
                 break
@@ -197,40 +200,46 @@ class Maze:
                     explored.append(childCell)
                     bfs_path[childCell] = currCell
 
-        pygame.display.update()
         finalPath={}
         while START!=finalCell: 
             finalPath[bfs_path[finalCell]]=finalCell
             finalCell = bfs_path[finalCell]
-        
 
+        return finalPath
+        
+    def BFSfinalPath(self,finalPath,clock):
         startToEnd= dict(reversed(list(finalPath.items())))
         for cell in startToEnd.values():
-            cell.showFinalPath()
+            clock.tick(60)
+            cell.showFinalPathHelper()
             pygame.display.flip()
-        pygame.display.update()
-        return finalPath
+
+
 
 if __name__ == '__main__':
     pygame.init()
-    width = 500
-    height = 500
-    wOfCell = 22
-
+    width = 800
+    height = 800
+    wOfCell = 8
+    clock = pygame.time.Clock()
+    generate = False
     display = pygame.display.set_mode((width,height))
-    # path = None
     maze = Maze(height,width,wOfCell)
     grid = maze.maze_generation(display)
-    maze.DFS()
+    
+    maze.DFS(clock)
     maze.refreshScreen(grid)
-    x = maze.BFS(grid)
+    solution = maze.BFS(grid,clock)
+    maze.BFSfinalPath(solution,clock)
 
     finished = False
-    clock = pygame.time.Clock()
-
     while not finished:
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
                 pygame.quit()
-                    
+                exit()
+        
+        clock.tick(60)
+        pygame.display.update()
