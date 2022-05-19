@@ -12,7 +12,6 @@ class Cell:
         self.w = w
         self.display = display
         self.walls = {"N":True, "S":True, "W": True, "E":True}
-        #self.walls = [True,True,True,True] #Top Bottom Left Right
         self.visited = False
         self.cols = cols
         self.rows = rows
@@ -69,7 +68,7 @@ class Cell:
         x_coord = self.x*self.w
         y_coord = self.y*self.w
 
-        pygame.draw.rect(self.display, (255,0,0), (x_coord,y_coord, self.w, self.w))
+        pygame.draw.rect(self.display, (255,255,255), (x_coord,y_coord, self.w, self.w))
     
     def showStartorEnd(self, index):
             cell = grid[index]
@@ -160,8 +159,8 @@ class Maze:
                 self.curr = next_n
             elif self.dfs_stack:
                 self.curr = self.dfs_stack.pop()
-        pygame.display.flip()
-        time.sleep(0.1)
+            pygame.display.flip()
+
         pygame.display.update()
     def BFS(self,grid):
         START = grid[0]
@@ -174,6 +173,8 @@ class Maze:
         while frontier:
             currCell = frontier.pop(0)
             currCell.showPath()
+            time.sleep(0.1)
+            pygame.display.flip()
             if currCell == finalCell:
                 self.refreshScreen(grid)
                 break
@@ -196,7 +197,7 @@ class Maze:
                     explored.append(childCell)
                     bfs_path[childCell] = currCell
 
-        pygame.display.flip()
+        pygame.display.update()
         finalPath={}
         while START!=finalCell: 
             finalPath[bfs_path[finalCell]]=finalCell
@@ -219,16 +220,11 @@ if __name__ == '__main__':
     display = pygame.display.set_mode((width,height))
     # path = None
     maze = Maze(height,width,wOfCell)
-    """Doesnt display the grid anymore"""
     grid = maze.maze_generation(display)
-    """This only displays a red square"""
     maze.DFS()
-
-    """This displays the grid?"""
+    maze.refreshScreen(grid)
     x = maze.BFS(grid)
-    # print(x)
-    # for i in x:
-    #     i.showFinalPath
+
     finished = False
     clock = pygame.time.Clock()
 
