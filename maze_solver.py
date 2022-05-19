@@ -270,20 +270,34 @@ class MenuSelection:
         wOfCell = 0
         
         if cols>rows:
-            wOfCell = width/cols
+            wOfCell = int(width/cols)
         elif cols<rows:
-            wOfCell = height/rows
+            wOfCell = int(height/rows)
         else:
-            wOfCell = height/rows
+            wOfCell = int(height/rows)
 
         display = pygame.display.set_mode((width,height))
         maze = Maze(cols,rows,wOfCell)
         grid = maze.maze_generation(display)
         maze.DFS(showBuilding = self.maze_gen_showBuilding,fullSpeed = self.maze_gen_fullspeed)
-        maze.refreshScreen(grid)
-        solution = maze.BFS(grid,fullSpeed = self.bfs_search_fullspeed)
-        maze.BFSfinalPath(solution, fullSpeed = self.final_path_fullspeed)
-    
+        print("""
+        Solve Maze?
+
+        1. Yes
+        2. Exit to main menu
+        """)
+        solveInput = int(input('Option: '))
+
+        if solveInput == 1:
+            maze.refreshScreen(grid)
+            solution = maze.BFS(grid,fullSpeed = self.bfs_search_fullspeed)
+            maze.BFSfinalPath(solution, fullSpeed = self.final_path_fullspeed)
+
+        elif solveInput == 2:
+            self.MainMenu()
+        
+        else:
+            print("Not an option... Aborting")  
     def currentOptions(self):
         maze_gen_speed = ""
         bfs_search_speed = ""
@@ -313,6 +327,7 @@ class MenuSelection:
 
                 Final Path Speed: {final_path_speed}
         """)
+    
     def options(self):
         
         self.currentOptions()
@@ -397,8 +412,7 @@ if __name__ == '__main__':
     pygame.font.init()
 
 
-    mainMenu = MenuSelection()
-    selection = mainMenu.MainMenu()
+
 
     finished = False
     while not finished:
@@ -408,4 +422,6 @@ if __name__ == '__main__':
                 finished = True
                 pygame.quit()
                 exit()
+        mainMenu = MenuSelection()
+        selection = mainMenu.MainMenu()
 
