@@ -95,6 +95,7 @@ class Cell:
         inner = pygame.Rect(x_coord*1.5,y_coord*1.5, self.w/1.5, self.w/1.5)
         inner.center = outer.center
 
+
         start = self.showStartorEnd(0)
         end = self.showStartorEnd(-1)
         
