@@ -75,7 +75,9 @@ class Cell:
     def showPath(self):
         x_coord = self.x*self.w
         y_coord = self.y*self.w
-        
+        outer = pygame.Rect(x_coord, y_coord, self.w, self.w)
+        inner = pygame.Rect(x_coord*1.5,y_coord*1.5, self.w/1.5, self.w/1.5)
+        inner.center = outer.center
 
         start = self.showStartorEnd(0)
         end = self.showStartorEnd(-1)
@@ -83,20 +85,23 @@ class Cell:
         pygame.draw.rect(self.display, (50, 168, 92), start)
         pygame.draw.rect(self.display, (168, 50, 50), end)
         
-        pygame.draw.rect(self.display, (27, 94, 227), (x_coord,y_coord, self.w, self.w))
+        pygame.draw.rect(self.display, (27, 94, 227), inner)
         pygame.display.flip()
         
     def showFinalPathHelper(self):
         x_coord = self.x*self.w
         y_coord = self.y*self.w
-        
+        outer = pygame.Rect(x_coord, y_coord, self.w, self.w)
+        inner = pygame.Rect(x_coord*1.5,y_coord*1.5, self.w/1.5, self.w/1.5)
+        inner.center = outer.center
+
         start = self.showStartorEnd(0)
         end = self.showStartorEnd(-1)
         
         pygame.draw.rect(self.display, (50, 168, 92), start)
         pygame.draw.rect(self.display, (168, 50, 50), end)
 
-        pygame.draw.rect(self.display, (27, 140, 46), (x_coord+5,y_coord+5, self.w-5, self.w-5))
+        pygame.draw.rect(self.display, (27, 140, 46), inner)
         
 class Maze:
     def __init__(self,cols,rows,w,grid=[]) -> None:
@@ -151,7 +156,6 @@ class Maze:
 
             else:
                 myfont = pygame.font.SysFont("monospace", 30)
-                # render text
                 label = myfont.render("Loading...", 1, (255,255,0))
                 self.display.blit(label, (250, 250))
             self.curr.visited = True
