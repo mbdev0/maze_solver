@@ -76,7 +76,7 @@ class Cell:
         x_coord = self.x*self.w
         y_coord = self.y*self.w
         outer = pygame.Rect(x_coord, y_coord, self.w, self.w)
-        inner = pygame.Rect(x_coord*1.5,y_coord*1.5, self.w/1.5, self.w/1.5)
+        inner = pygame.Rect(x_coord*2,y_coord*2, self.w/2, self.w/2)
         inner.center = outer.center
 
         start = self.showStartorEnd(0)
@@ -92,7 +92,7 @@ class Cell:
         x_coord = self.x*self.w
         y_coord = self.y*self.w
         outer = pygame.Rect(x_coord, y_coord, self.w, self.w)
-        inner = pygame.Rect(x_coord*1.5,y_coord*1.5, self.w/1.5, self.w/1.5)
+        inner = pygame.Rect(x_coord*2,y_coord*2, self.w/2, self.w/2)
         inner.center = outer.center
 
 
@@ -257,14 +257,18 @@ class MenuSelection:
         3. Exit
     """)
 
-        self.menu = int(input("Choose an Option: "))
+        try:
+            self.menu = int(input("Choose an Option: "))
 
-        if self.menu == 1:
-            self.StartMaze()
-        if self.menu == 2:
-            self.options()
-        if self.menu == 3:
-            sys.exit()
+            if self.menu == 1:
+                self.StartMaze()
+            if self.menu == 2:
+                self.options()
+            if self.menu == 3:
+                sys.exit()
+        except Exception:
+            print('Try entering a correct number!')
+            self.MainMenu()
 
     def StartMaze(self):
         width = 500
@@ -291,18 +295,21 @@ class MenuSelection:
         1. Yes
         2. Exit to main menu
         """)
-        solveInput = int(input('Option: '))
+        try:
+            solveInput = int(input('Option: '))
 
-        if solveInput == 1:
-            maze.refreshScreen(grid)
-            solution = maze.BFS(grid,fullSpeed = self.bfs_search_fullspeed)
-            maze.BFSfinalPath(solution, fullSpeed = self.final_path_fullspeed)
+            if solveInput == 1:
+                maze.refreshScreen(grid)
+                solution = maze.BFS(grid,fullSpeed = self.bfs_search_fullspeed)
+                maze.BFSfinalPath(solution, fullSpeed = self.final_path_fullspeed)
 
-        elif solveInput == 2:
-            self.MainMenu()
-        
-        else:
-            print("Not an option... Aborting")  
+            elif solveInput == 2:
+                self.MainMenu()
+            
+            else:
+                print("Not an option... Aborting")  
+        except Exception:
+            print("Try to enter a number!")
     def currentOptions(self):
         maze_gen_speed = ""
         bfs_search_speed = ""
@@ -345,72 +352,75 @@ class MenuSelection:
             4. Exit
 
         """)
+        try:
+            selection = int(input("Choose an Option: "))
+
+            if selection == 1:
+                print("""
+                How would you like to watch the maze generation?
+
+                Warning, for bigger mazes i'd advise to not see the maze generation unless you like how pretty it looks!
+
+                1. Full Speed
+                2. Default Speed
+                3. Not See It ----> You will get a loading screen instead
+                4. See It
+                """)
+                option = int(input("Option: "))
+                if option == 1:
+                    self.maze_gen_fullspeed = True
+                    self.options()
+                elif option == 2:
+                    self.maze_gen_fullspeed = False
+                    self.options()
+                elif option == 3:
+                    self.maze_gen_showBuilding = False
+                    self.options()
+                elif option == 4:
+                    self.maze_gen_showBuilding = True
+                    self.options()
+
+            elif selection == 2:
+                print("""
+                How would you like to watch the breadth first search?
+
+                1. Full Speed
+                2. Default Speed
+                """)
+                option = int(input("Option: "))
+
+                if option == 1:
+                    self.bfs_search_fullspeed = True
+                    self.options()
+                elif option == 2:
+                    self.bfs_search_fullspeed = False
+                    self.options()
+                else: print("Wrong input... Aborting"); self.options()
+
+            elif selection == 3:
+                print("""
+                How would you like to watch the final successful path?
+
+                1. Full Speed
+                2. Default Speed
+                """)
+                option = int(input("Option: "))
+
+                if option == 1:
+                    self.final_path_fullspeed = True
+                    self.options()
+                elif option == 2:
+                    self.final_path_fullspeed = False
+                    self.options()
+                else: print("Wrong input... Aborting"); self.options()
+
+            elif selection == 4:
+                print("Redirecting to main menu")
+                self.MainMenu()
+            else: print("That input doesn't exist"); self.options();
         
-        selection = int(input("Choose an Option: "))
-
-        if selection == 1:
-            print("""
-            How would you like to watch the maze generation?
-
-            Warning, for bigger mazes i'd advise to not see the maze generation unless you like how pretty it looks!
-
-            1. Full Speed
-            2. Default Speed
-            3. Not See It ----> You will get a loading screen instead
-            4. See It
-            """)
-            option = int(input("Option: "))
-            if option == 1:
-                self.maze_gen_fullspeed = True
-                self.options()
-            elif option == 2:
-                self.maze_gen_fullspeed = False
-                self.options()
-            elif option == 3:
-                self.maze_gen_showBuilding = False
-                self.options()
-            elif option == 4:
-                self.maze_gen_showBuilding = True
-                self.options()
-
-        elif selection == 2:
-            print("""
-            How would you like to watch the breadth first search?
-
-            1. Full Speed
-            2. Default Speed
-            """)
-            option = int(input("Option: "))
-
-            if option == 1:
-                self.bfs_search_fullspeed = True
-                self.options()
-            elif option == 2:
-                self.bfs_search_fullspeed = False
-                self.options()
-            else: print("Wrong input... Aborting"); self.options()
-
-        elif selection == 3:
-            print("""
-            How would you like to watch the final successful path?
-
-            1. Full Speed
-            2. Default Speed
-            """)
-            option = int(input("Option: "))
-
-            if option == 1:
-                self.final_path_fullspeed = True
-                self.options()
-            elif option == 2:
-                self.final_path_fullspeed = False
-                self.options()
-            else: print("Wrong input... Aborting"); self.options()
-
-        elif selection == 4:
-            print("Redirecting to main menu")
-            self.MainMenu()
-        else: print("That input doesn't exist"); self.options();
+        except Exception:
+            print("Wrong input, make sure to enter an integer only"); self.options();
 
 if __name__ == '__main__':
     pygame.init()
